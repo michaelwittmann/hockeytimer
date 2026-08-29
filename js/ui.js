@@ -176,8 +176,9 @@ export class UIManager {
     const secondsInput = document.getElementById('edit-seconds');
     const tenthsInput = document.getElementById('edit-tenths');
 
-    minutesInput.focus();
+    // Only auto-focus on desktop
     if (!isTouchDevice) {
+      minutesInput.focus();
       minutesInput.select();
     }
 
