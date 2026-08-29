@@ -43,8 +43,6 @@ class HockeyTimerApp {
     // Update UI to initial state
     this.ui.updateTimerDisplay(this.timer.currentTime);
     this.ui.updateState(this.timer.state);
-
-    console.log('Hockey Timer App initialized');
   }
 
   _setupTimerCallbacks() {
@@ -81,7 +79,6 @@ class HockeyTimerApp {
 
     // Game finished
     this.timer.onFinish = () => {
-      console.log('Game finished');
       // Play interval sound at game end
       this._playIntervalSound();
     };
@@ -168,8 +165,6 @@ class HockeyTimerApp {
               this.hasPlayedFirstInterval = false;
             }
           });
-
-          console.log('Settings updated:', changes);
         }
       },
 
@@ -181,8 +176,6 @@ class HockeyTimerApp {
         this.timer.updateConfig(this.settings.getAll());
         this.previousTime = this.timer.currentTime;
         this.hasPlayedFirstInterval = false;
-
-        console.log('Settings reset to defaults');
       },
 
       onTestSound: (soundKey) => {
@@ -201,9 +194,7 @@ class HockeyTimerApp {
   }
 
   _setupSettingsCallbacks() {
-    this.settings.onChange = (key, newValue, oldValue) => {
-      console.log(`Setting changed: ${key} = ${newValue} (was ${oldValue})`);
-    };
+    // Settings change handler removed - no longer needed
   }
 
   _playIntervalSound() {

@@ -12,7 +12,19 @@ export class SettingsManager {
       const stored = localStorage.getItem(this.storageKey);
       if (stored) {
         const parsed = JSON.parse(stored);
+
+        // Migration: detect old format where swapInterval was in minutes
+        // If swapInterval > 300 (5 minutes in seconds), it's likely the old format
+        if (parsed.swapInterval && parsed.swapInterval > 300) {
+          console.log('Migrating old swapInterval format from minutes to seconds');
+          // Don't convert, just use the default (60 seconds)
+          parsed.swapInterval = DEFAULT_SETTINGS.swapInterval;
+        }
+
         this.settings = { ...DEFAULT_SETTINGS, ...parsed };
+
+        // Save migrated settings
+        this.save();
       }
     } catch (error) {
       console.error('Failed to load settings:', error);

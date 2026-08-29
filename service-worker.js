@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hockey-timer-v2';
+const CACHE_NAME = 'hockey-timer-v3';
 const urlsToCache = [
   './',
   './index.html',

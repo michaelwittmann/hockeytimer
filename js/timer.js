@@ -252,7 +252,7 @@ export class GameTimer {
     }
 
     this.gameDuration = config.gameDuration * 60;
-    this.swapInterval = config.swapInterval * 60;
+    this.swapInterval = config.swapInterval; // already in seconds
     this.countMode = config.countMode;
 
     // Reset to new duration
