@@ -325,15 +325,6 @@ export class UIManager {
     tenthsInput.addEventListener('input', handleInput);
     }
 
-    // For mobile selects, confirm on change
-    if (isTouchDevice) {
-      const confirmButton = document.createElement('button');
-      confirmButton.textContent = 'Done';
-      confirmButton.className = 'edit-confirm-btn';
-      confirmButton.onclick = confirmEdit;
-      this.timerDisplay.parentElement.appendChild(confirmButton);
-    }
-
     const handleBlur = () => {
       setTimeout(() => {
         if (!minutesInput.matches(':focus') &&
@@ -351,11 +342,6 @@ export class UIManager {
 
   _exitEditMode() {
     this.isEditMode = false;
-    // Remove confirm button if it exists
-    const confirmBtn = this.timerDisplay.parentElement.querySelector('.edit-confirm-btn');
-    if (confirmBtn) {
-      confirmBtn.remove();
-    }
     // Display will be updated by the next timer tick
   }
 
