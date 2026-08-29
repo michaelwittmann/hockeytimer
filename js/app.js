@@ -11,7 +11,7 @@ class HockeyTimerApp {
     this.settings = null;
     this.ui = null;
 
-    this.lastSwapInterval = -1;
+    this.previousTime = 0;
     this.hasPlayedFirstInterval = false;
   }
 
@@ -58,18 +58,23 @@ class HockeyTimerApp {
 
       // ONLY play audio when timer is actively running
       if (this.timer.state === TIMER_STATES.RUNNING) {
-        const currentInterval = this.timer.getCurrentInterval();
+        const swapInterval = this.timer.swapInterval;
 
-        // Check if interval has changed
-        if (currentInterval !== this.lastSwapInterval) {
+        // Calculate which interval we were in and which we're in now
+        const previousInterval = Math.floor(this.previousTime / swapInterval);
+        const currentInterval = Math.floor(currentTime / swapInterval);
+
+        // Check if we crossed a boundary (interval changed)
+        if (currentInterval !== previousInterval) {
           // Skip the first interval change after start (don't play sound)
           if (this.hasPlayedFirstInterval) {
             this._playIntervalSound();
           } else {
             this.hasPlayedFirstInterval = true;
           }
-          this.lastSwapInterval = currentInterval;
         }
+
+        this.previousTime = currentTime;
       }
     };
 
@@ -104,7 +109,7 @@ class HockeyTimerApp {
 
         // Reset flags for new session
         this.hasPlayedFirstInterval = false;
-        this.lastSwapInterval = this.timer.getCurrentInterval();
+        this.previousTime = this.timer.currentTime;
         this.timer.start();
       },
 
@@ -123,28 +128,20 @@ class HockeyTimerApp {
       onReset: () => {
         this.timer.reset();
         // Reset flags for fresh start
-        this.lastSwapInterval = -1;
+        this.previousTime = this.timer.currentTime;
         this.hasPlayedFirstInterval = false;
       },
 
       onAdjustTime: (seconds) => {
-        const result = this.timer.adjustTime(seconds);
-
-        // If we crossed an interval boundary, update our tracking
-        // But do NOT play sound - only play when timer is running naturally
-        if (result.crossedInterval) {
-          this.lastSwapInterval = result.currentInterval;
-        }
+        this.timer.adjustTime(seconds);
+        // Update previousTime to current after manual adjustment
+        this.previousTime = this.timer.currentTime;
       },
 
       onSetTime: (minutes, seconds, tenths = 0) => {
-        const result = this.timer.setTime(minutes, seconds, tenths);
-
-        // If we crossed an interval boundary, update our tracking
-        // But do NOT play sound - only play when timer is running naturally
-        if (result.crossedInterval) {
-          this.lastSwapInterval = result.currentInterval;
-        }
+        this.timer.setTime(minutes, seconds, tenths);
+        // Update previousTime to current after manual adjustment
+        this.previousTime = this.timer.currentTime;
       },
 
       onOpenSettings: () => {
@@ -166,7 +163,8 @@ class HockeyTimerApp {
             if (['gameDuration', 'swapInterval', 'countMode'].includes(key)) {
               // Timer configuration changed - update timer
               this.timer.updateConfig(this.settings.getAll());
-              this.lastSwapInterval = -1;
+              this.previousTime = this.timer.currentTime;
+              this.hasPlayedFirstInterval = false;
             }
           });
 
@@ -180,7 +178,8 @@ class HockeyTimerApp {
 
         // Update timer with reset settings
         this.timer.updateConfig(this.settings.getAll());
-        this.lastSwapInterval = -1;
+        this.previousTime = this.timer.currentTime;
+        this.hasPlayedFirstInterval = false;
 
         console.log('Settings reset to defaults');
       },
