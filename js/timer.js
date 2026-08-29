@@ -103,7 +103,9 @@ export class GameTimer {
     const previousTime = this.currentTime;
     const previousInterval = Math.floor(previousTime / this.swapInterval);
 
-    this.currentTime = Math.max(0, Math.min(this.gameDuration, this.currentTime + seconds));
+    // Allow up to 99:59:9 (5999.9 seconds)
+    const maxTime = 99 * 60 + 59 + 0.9;
+    this.currentTime = Math.max(0, Math.min(maxTime, this.currentTime + seconds));
 
     const currentInterval = Math.floor(this.currentTime / this.swapInterval);
 
@@ -179,6 +181,7 @@ export class GameTimer {
     if (this.countMode === 'countDown') {
       this.currentTime = Math.max(0, this.currentTime - elapsed);
     } else {
+      // Count up - stop at game duration
       this.currentTime = Math.min(this.gameDuration, this.currentTime + elapsed);
     }
 
