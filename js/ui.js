@@ -157,13 +157,7 @@ export class UIManager {
     const seconds = parts[1];
     const tenths = parts[2] || '0';
 
-    this.timerDisplay.innerHTML = `
-      <input type="number" id="edit-minutes" class="time-edit-input" value="${String(parseInt(minutes)).padStart(2, '0')}" min="0" max="99">
-      <span class="time-separator">:</span>
-      <input type="number" id="edit-seconds" class="time-edit-input" value="${String(parseInt(seconds)).padStart(2, '0')}" min="0" max="59">
-      <span class="time-separator">:</span>
-      <input type="number" id="edit-tenths" class="time-edit-input time-edit-input-tenths" value="${parseInt(tenths)}" min="0" max="9">
-    `;
+    this.timerDisplay.innerHTML = `<input type="number" inputmode="numeric" pattern="[0-9]*" id="edit-minutes" class="time-edit-input" value="${String(parseInt(minutes)).padStart(2, '0')}" min="0" max="99"><span class="time-separator">:</span><input type="number" inputmode="numeric" pattern="[0-9]*" id="edit-seconds" class="time-edit-input" value="${String(parseInt(seconds)).padStart(2, '0')}" min="0" max="59"><span class="time-separator">:</span><input type="number" inputmode="numeric" pattern="[0-9]*" id="edit-tenths" class="time-edit-input time-edit-input-tenths" value="${parseInt(tenths)}" min="0" max="9">`;
 
     const minutesInput = document.getElementById('edit-minutes');
     const secondsInput = document.getElementById('edit-seconds');

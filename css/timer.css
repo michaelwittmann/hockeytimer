@@ -28,6 +28,16 @@
   white-space: nowrap;
 }
 
+/* Remove whitespace between inline-block elements in edit mode */
+.timer-display:has(.time-edit-input) {
+  font-size: 0;
+}
+
+.timer-display:has(.time-edit-input) .time-edit-input,
+.timer-display:has(.time-edit-input) .time-separator {
+  font-size: 4rem;
+}
+
 .timer-display:hover {
   color: var(--accent-primary);
 }
@@ -111,12 +121,12 @@
   border: 2px solid var(--accent-primary);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
-  font-size: 4rem;
+  font-size: inherit;
   font-weight: 700;
   font-family: inherit;
   text-align: center;
   padding: 0;
-  margin: 0 0.05em;
+  margin: 0;
   -webkit-appearance: none;
   -moz-appearance: textfield;
   line-height: 1.2;
@@ -144,9 +154,9 @@
 
 .time-separator {
   opacity: 0.5;
-  margin: 0 0.1em;
+  margin: 0;
+  padding: 0;
   display: inline-block;
   vertical-align: middle;
-  font-size: 2.5rem;
   font-weight: 700;
 }
