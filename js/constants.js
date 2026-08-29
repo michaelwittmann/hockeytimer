@@ -1,7 +1,7 @@
 // Default configuration constants
 export const DEFAULT_SETTINGS = {
   gameDuration: 32,         // minutes
-  swapInterval: 1,          // minutes
+  swapInterval: 60,         // seconds
   countMode: 'countDown',   // 'countDown' or 'countUp'
   intervalSound: 'ship_horn'   // 'buzzer', 'air_horn', 'braam', 'double_bell', 'triple_bell', 'ship_horn'
 };

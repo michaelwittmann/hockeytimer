@@ -3,7 +3,7 @@ import { TIMER_STATES } from './constants.js';
 export class GameTimer {
   constructor(config) {
     this.gameDuration = config.gameDuration * 60; // convert to seconds
-    this.swapInterval = config.swapInterval * 60; // convert to seconds
+    this.swapInterval = config.swapInterval; // already in seconds
     this.countMode = config.countMode;
 
     // Timer state

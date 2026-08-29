@@ -47,7 +47,7 @@
     <!-- Keyboard Shortcuts Help -->
     <div class="shortcuts-help">
       <strong>Shortcuts:</strong>
-      <span>Space/Enter: Start/Pause</span> •
+      <span>Space: Start/Pause</span> •
       <span>R: Reset</span> •
       <span>↑↓: Adjust time</span> •
       <span>E: Edit time</span>
@@ -66,13 +66,13 @@
         <!-- Game Duration -->
         <div class="setting-group">
           <label for="setting-game-duration">Game Duration (minutes)</label>
-          <input type="number" id="setting-game-duration" min="1" max="99" value="32">
+          <input type="number" inputmode="numeric" pattern="[0-9]*" id="setting-game-duration" min="1" max="99" value="32">
         </div>
 
         <!-- Swap Interval -->
         <div class="setting-group">
-          <label for="setting-swap-interval">Player Swap Interval (minutes)</label>
-          <input type="number" id="setting-swap-interval" min="1" max="10" value="1">
+          <label for="setting-swap-interval">Player Swap Interval (seconds)</label>
+          <input type="number" inputmode="numeric" pattern="[0-9]*" id="setting-swap-interval" min="1" max="3600" value="60">
         </div>
 
         <!-- Count Mode -->

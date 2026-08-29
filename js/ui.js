@@ -157,14 +157,25 @@ export class UIManager {
     const seconds = parts[1];
     const tenths = parts[2] || '0';
 
-    this.timerDisplay.innerHTML = `<input type="number" inputmode="numeric" pattern="[0-9]*" id="edit-minutes" class="time-edit-input" value="${String(parseInt(minutes)).padStart(2, '0')}" min="0" max="99"><span class="time-separator">:</span><input type="number" inputmode="numeric" pattern="[0-9]*" id="edit-seconds" class="time-edit-input" value="${String(parseInt(seconds)).padStart(2, '0')}" min="0" max="59"><span class="time-separator">:</span><input type="number" inputmode="numeric" pattern="[0-9]*" id="edit-tenths" class="time-edit-input time-edit-input-tenths" value="${parseInt(tenths)}" min="0" max="9">`;
+    // Check if device is mobile/touch-based
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+    if (isTouchDevice) {
+      // Use select pickers for mobile
+      this.timerDisplay.innerHTML = `<select id="edit-minutes" class="time-edit-select">${this._generateOptions(0, 99, parseInt(minutes))}</select><span class="time-separator">:</span><select id="edit-seconds" class="time-edit-select">${this._generateOptions(0, 59, parseInt(seconds))}</select><span class="time-separator">:</span><select id="edit-tenths" class="time-edit-select time-edit-select-tenths">${this._generateOptions(0, 9, parseInt(tenths))}</select>`;
+    } else {
+      // Use number inputs for desktop
+      this.timerDisplay.innerHTML = `<input type="number" inputmode="numeric" pattern="[0-9]*" id="edit-minutes" class="time-edit-input" value="${String(parseInt(minutes)).padStart(2, '0')}" min="0" max="99"><span class="time-separator">:</span><input type="number" inputmode="numeric" pattern="[0-9]*" id="edit-seconds" class="time-edit-input" value="${String(parseInt(seconds)).padStart(2, '0')}" min="0" max="59"><span class="time-separator">:</span><input type="number" inputmode="numeric" pattern="[0-9]*" id="edit-tenths" class="time-edit-input time-edit-input-tenths" value="${parseInt(tenths)}" min="0" max="9">`;
+    }
 
     const minutesInput = document.getElementById('edit-minutes');
     const secondsInput = document.getElementById('edit-seconds');
     const tenthsInput = document.getElementById('edit-tenths');
 
     minutesInput.focus();
-    minutesInput.select();
+    if (!isTouchDevice) {
+      minutesInput.select();
+    }
 
     const confirmEdit = () => {
       const mins = Math.max(0, Math.min(99, parseInt(minutesInput.value) || 0));
@@ -182,19 +193,21 @@ export class UIManager {
       this._exitEditMode();
     };
 
-    const handleKeydown = (e) => {
-      if (e.key === 'Enter') {
-        confirmEdit();
-      } else if (e.key === 'Escape') {
-        cancelEdit();
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        adjustFieldUp(e.target);
-      } else if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        adjustFieldDown(e.target);
-      }
-    };
+    // Only add keyboard and input handlers for non-mobile
+    if (!isTouchDevice) {
+      const handleKeydown = (e) => {
+        if (e.key === 'Enter') {
+          confirmEdit();
+        } else if (e.key === 'Escape') {
+          cancelEdit();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          adjustFieldUp(e.target);
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          adjustFieldDown(e.target);
+        }
+      };
 
     const adjustFieldUp = (field) => {
       const id = field.id;
@@ -271,9 +284,55 @@ export class UIManager {
       }
     };
 
+    const handleInput = (e) => {
+      const field = e.target;
+      const id = field.id;
+      let value = field.value;
+      let isValid = true;
+
+      // Apply field-specific validation
+      if (id === 'edit-minutes') {
+        // Check if > 2 digits or > 99
+        if (value.length > 2 || parseInt(value) > 99) {
+          isValid = false;
+        }
+      } else if (id === 'edit-seconds') {
+        // Check if > 2 digits or > 59
+        if (value.length > 2 || parseInt(value) > 59) {
+          isValid = false;
+        }
+      } else if (id === 'edit-tenths') {
+        // Check if > 1 digit
+        if (value.length > 1) {
+          isValid = false;
+        }
+      }
+
+      // Toggle invalid class
+      if (isValid) {
+        field.classList.remove('invalid');
+      } else {
+        field.classList.add('invalid');
+      }
+    };
+
     minutesInput.addEventListener('keydown', handleKeydown);
     secondsInput.addEventListener('keydown', handleKeydown);
     tenthsInput.addEventListener('keydown', handleKeydown);
+
+    minutesInput.addEventListener('input', handleInput);
+    secondsInput.addEventListener('input', handleInput);
+    tenthsInput.addEventListener('input', handleInput);
+    }
+
+    // For mobile selects, confirm on change
+    if (isTouchDevice) {
+      const confirmButton = document.createElement('button');
+      confirmButton.textContent = 'Done';
+      confirmButton.className = 'edit-confirm-btn';
+      confirmButton.onclick = confirmEdit;
+      this.timerDisplay.parentElement.appendChild(confirmButton);
+    }
 
     const handleBlur = () => {
       setTimeout(() => {
@@ -292,7 +351,22 @@ export class UIManager {
 
   _exitEditMode() {
     this.isEditMode = false;
+    // Remove confirm button if it exists
+    const confirmBtn = this.timerDisplay.parentElement.querySelector('.edit-confirm-btn');
+    if (confirmBtn) {
+      confirmBtn.remove();
+    }
     // Display will be updated by the next timer tick
+  }
+
+  _generateOptions(min, max, selected) {
+    let options = '';
+    for (let i = min; i <= max; i++) {
+      const value = i < 10 && max > 9 ? String(i).padStart(2, '0') : String(i);
+      const isSelected = i === selected ? ' selected' : '';
+      options += `<option value="${i}"${isSelected}>${value}</option>`;
+    }
+    return options;
   }
 
   _openSettings() {
@@ -367,7 +441,6 @@ export class UIManager {
 
       switch (e.key) {
         case ' ':
-        case 'Enter':
           e.preventDefault();
           if (this.currentState === TIMER_STATES.RUNNING) {
             this.callbacks.onPause();
@@ -376,6 +449,11 @@ export class UIManager {
           } else {
             this.callbacks.onStart();
           }
+          break;
+
+        case 'Enter':
+          // Prevent Enter from triggering button clicks
+          e.preventDefault();
           break;
 
         case 'r':
