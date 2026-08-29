@@ -73,9 +73,10 @@ class HockeyTimerApp {
             this.hasPlayedFirstInterval = true;
           }
         }
-
-        this.previousTime = currentTime;
       }
+
+      // Always update previousTime (even when not running, for display updates)
+      this.previousTime = currentTime;
     };
 
     // Game finished
