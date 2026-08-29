@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Hockey Timer">
+  <meta name="theme-color" content="#0a0e1a">
+  <title>Hockey Timer</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=settings" />
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/timer.css">
+  <link rel="stylesheet" href="css/controls.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <h1 class="app-title">🏒 Hockey Timer</h1>
+      <button id="settings-btn" class="icon-btn" aria-label="Settings">
+        <span class="material-symbols-outlined">settings</span>
+      </button>
+    </header>
+
+    <!-- Audio Warning -->
+    <div id="audio-warning" class="audio-warning" style="display: none;">
+      Click Start to enable audioI
+    </div>
+
+    <!-- Timer Display -->
+    <div id="timer-container" class="timer-container state-stopped">
+      <div id="timer-display" class="timer-display" tabindex="0" title="Click to edit time">
+        00:00:0
+      </div>
+    </div>
+
+    <!-- Main Controls -->
+    <div class="controls-container">
+      <button id="start-btn" class="control-btn primary">Start</button>
+      <button id="reset-btn" class="control-btn">Reset</button>
+    </div>
+
+    <!-- Keyboard Shortcuts Help -->
+    <div class="shortcuts-help">
+      <strong>Shortcuts:</strong>
+      <span>Space/Enter: Start/Pause</span> •
+      <span>R: Reset</span> •
+      <span>↑↓: Adjust time</span> •
+      <span>E: Edit time</span>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Settings</h2>
+        <button id="settings-close" class="close-btn" aria-label="Close">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Game Duration -->
+        <div class="setting-group">
+          <label for="setting-game-duration">Game Duration (minutes)</label>
+          <input type="number" id="setting-game-duration" min="1" max="99" value="32">
+        </div>
+
+        <!-- Swap Interval -->
+        <div class="setting-group">
+          <label for="setting-swap-interval">Player Swap Interval (minutes)</label>
+          <input type="number" id="setting-swap-interval" min="1" max="10" value="1">
+        </div>
+
+        <!-- Count Mode -->
+        <div class="setting-group">
+          <label for="setting-count-mode">Timer Mode</label>
+          <select id="setting-count-mode">
+            <option value="countDown">Count Down</option>
+            <option value="countUp">Count Up</option>
+          </select>
+        </div>
+
+        <!-- Interval Sound -->
+        <div class="setting-group">
+          <label for="setting-interval-sound">Interval Sound</label>
+          <div class="sound-selector">
+            <select id="setting-interval-sound">
+              <option value="buzzer">Buzzer</option>
+              <option value="air_horn">Air Horn</option>
+              <option value="braam">Braam</option>
+              <option value="double_bell">Double Bell</option>
+              <option value="triple_bell">Triple Bell</option>
+              <option value="ship_horn">Ship Horn</option>
+            </select>
+            <button class="test-sound-btn" id="test-current-sound" type="button">▶ Test Sound</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="reset-settings" class="btn secondary">Reset to Defaults</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js?v=2"></script>
+  <script>
+    // Register service worker for PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+          .then((registration) => {
+            console.log('Service Worker registered:', registration);
+          })
+          .catch((error) => {
+            console.log('Service Worker registration failed:', error);
+          });
+      });
+    }
+  </script>
+</body>
+</html>

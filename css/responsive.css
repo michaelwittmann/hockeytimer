@@ -1,0 +1,181 @@
+/* Responsive Design */
+
+/* Mobile First - Base styles above are mobile-optimized */
+
+/* Small phones (< 375px) */
+@media (max-width: 374px) {
+  html {
+    font-size: 14px;
+  }
+
+  .app-title {
+    font-size: 1.5rem;
+  }
+
+  .control-btn {
+    font-size: 1rem;
+    min-height: 50px;
+  }
+
+  .time-adjust-container {
+    flex-wrap: wrap;
+  }
+
+  .adjust-btn {
+    flex: 1 1 calc(50% - 0.5rem);
+  }
+}
+
+/* Tablets and larger phones (>= 600px) */
+@media (min-width: 600px) {
+  .app-container {
+    padding: var(--spacing-lg);
+  }
+
+  .app-header {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .timer-container {
+    margin: calc(var(--spacing-xl) * 1.5) 0;
+    padding: calc(var(--spacing-xl) * 1.5);
+  }
+
+  .controls-container {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .time-adjust-container {
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .shortcuts-help {
+    font-size: 1rem;
+  }
+}
+
+/* Laptops and desktops (>= 1024px) */
+@media (min-width: 1024px) {
+  .app-container {
+    padding: var(--spacing-xl);
+  }
+
+  .timer-display {
+    font-size: 8rem;
+  }
+
+  .control-btn {
+    min-height: 70px;
+    font-size: 1.25rem;
+  }
+
+  .adjust-btn {
+    min-height: 60px;
+    min-width: 80px;
+    font-size: 1.125rem;
+  }
+
+  .adjust-btn.large {
+    min-width: 100px;
+    font-size: 1.25rem;
+  }
+
+  /* Show hover effects only on devices with hover capability */
+  .control-btn:hover:not(:disabled),
+  .adjust-btn:hover {
+    transition: all var(--transition-normal);
+  }
+}
+
+/* Landscape mode on mobile devices */
+@media (max-height: 600px) and (orientation: landscape) {
+  .app-container {
+    padding: var(--spacing-sm);
+  }
+
+  .app-header {
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .timer-container {
+    margin: var(--spacing-md) 0;
+    padding: var(--spacing-md);
+  }
+
+  .timer-display {
+    font-size: clamp(3rem, 10vh, 6rem);
+  }
+
+  .controls-container,
+  .time-adjust-container {
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .shortcuts-help {
+    display: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .timer-container,
+  .control-btn,
+  .adjust-btn {
+    border-width: 3px;
+  }
+
+  .timer-display:focus {
+    outline-width: 3px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .timer-container.warning,
+  .timer-container.warning.urgent,
+  .timer-container.state-finished {
+    animation: none !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .app-header,
+  .controls-container,
+  .time-adjust-container,
+  .shortcuts-help,
+  #settings-btn {
+    display: none;
+  }
+
+  .timer-display {
+    color: black;
+  }
+
+  .timer-container {
+    border-color: black;
+  }
+}
+
+/* Ensure minimum touch targets on all devices */
+@media (pointer: coarse) {
+  .control-btn,
+  .adjust-btn,
+  .icon-btn,
+  .close-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

@@ -1,0 +1,144 @@
+/* Control Buttons Styles */
+
+.controls-container {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+}
+
+.control-btn {
+  flex: 1;
+  min-height: 60px;
+  padding: var(--spacing-md);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 1.125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.control-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.control-btn:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+.control-btn.primary {
+  background: var(--success);
+  color: white;
+}
+
+.control-btn.primary:hover:not(:disabled) {
+  background: #0ea573;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.control-btn.primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.control-btn.secondary {
+  background: var(--warning);
+  color: var(--bg-primary);
+}
+
+.control-btn.secondary:hover:not(:disabled) {
+  background: #ea950c;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.control-btn.secondary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.control-btn:not(.primary):not(.secondary) {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 2px solid var(--border);
+}
+
+.control-btn:not(.primary):not(.secondary):hover:not(:disabled) {
+  background: var(--border);
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.control-btn:not(.primary):not(.secondary):active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.control-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Time Adjustment Controls */
+.time-adjust-container {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  justify-content: center;
+}
+
+.adjust-btn {
+  min-width: 60px;
+  min-height: 50px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-secondary);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.adjust-btn.large {
+  min-width: 80px;
+  font-size: 1.125rem;
+}
+
+.adjust-btn:hover {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.adjust-btn:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Touch feedback for mobile */
+@media (hover: none) {
+  .adjust-btn:active,
+  .control-btn:active:not(:disabled) {
+    background: var(--accent-active);
+    border-color: var(--accent-active);
+  }
+}
