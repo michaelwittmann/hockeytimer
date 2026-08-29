@@ -50,8 +50,12 @@ export class UIManager {
 
     this.resetBtn.addEventListener('click', () => callbacks.onReset());
 
-    // Direct time input
-    this.timerDisplay.addEventListener('click', () => this._enterEditMode());
+    // Direct time input - only when not running
+    this.timerDisplay.addEventListener('click', () => {
+      if (this.currentState !== TIMER_STATES.RUNNING) {
+        this._enterEditMode();
+      }
+    });
 
     // Settings
     this.settingsBtn.addEventListener('click', () => this._openSettings());
