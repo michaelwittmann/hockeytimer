@@ -346,7 +346,6 @@ export class UIManager {
 
   _exitEditMode() {
     this.isEditMode = false;
-    // Display will be updated by the next timer tick
   }
 
   _generateOptions(min, max, selected) {
@@ -442,7 +441,7 @@ export class UIManager {
           break;
 
         case 'Enter':
-          // Prevent Enter from triggering button clicks
+          // Only prevent Enter from triggering button clicks when NOT in edit mode
           e.preventDefault();
           break;
 

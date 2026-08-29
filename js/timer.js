@@ -130,7 +130,14 @@ export class GameTimer {
   setTime(minutes, seconds, tenths = 0) {
     const totalSeconds = minutes * 60 + seconds + (tenths / 10);
     const adjustment = totalSeconds - this.currentTime;
-    return this.adjustTime(adjustment);
+    const result = this.adjustTime(adjustment);
+
+    // Force immediate display update
+    if (this.onTick) {
+      this.onTick(this.currentTime);
+    }
+
+    return result;
   }
 
   getTimeRemaining() {
