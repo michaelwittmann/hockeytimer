@@ -182,7 +182,9 @@ export class GameTimer {
     this.lastTickTime = now;
 
     const previousTime = this.currentTime;
-    const previousInterval = Math.floor(previousTime / this.swapInterval);
+    // For interval detection, truncate to whole seconds (ignore tenths)
+    const previousSeconds = Math.floor(previousTime);
+    const previousInterval = Math.floor(previousSeconds / this.swapInterval);
 
     // Update current time
     if (this.countMode === 'countDown') {
@@ -192,18 +194,20 @@ export class GameTimer {
       this.currentTime = Math.min(this.gameDuration, this.currentTime + elapsed);
     }
 
-    const currentInterval = Math.floor(this.currentTime / this.swapInterval);
+    // For interval detection, truncate to whole seconds (ignore tenths)
+    const currentSeconds = Math.floor(this.currentTime);
+    const currentInterval = Math.floor(currentSeconds / this.swapInterval);
 
     // Check if we crossed an interval boundary
-    // In count-down mode: play when we cross from higher interval to lower (e.g. 61s -> 59s, play at 60)
-    // In count-up mode: play when we cross from lower interval to higher (e.g. 59s -> 61s, play at 60)
+    // Play sound when the seconds part reaches the interval boundary, ignoring tenths
+    // Example: 60.9 -> 60.8 triggers sound at 60 second mark (stadium clocks don't show tenths)
     let crossedInterval = false;
 
     if (this.countMode === 'countDown') {
-      // Count down: play when crossing DOWN through an interval boundary (at exactly X:00)
+      // Count down: play when crossing DOWN through an interval boundary (at X:00.Y)
       crossedInterval = previousInterval > currentInterval && currentInterval >= 0;
     } else {
-      // Count up: play when crossing UP through an interval boundary (at exactly X:00)
+      // Count up: play when crossing UP through an interval boundary (at X:00.Y)
       crossedInterval = currentInterval > previousInterval;
     }
 
