@@ -381,7 +381,8 @@ export class UIManager {
     document.getElementById('setting-swap-interval').value = settings.swapInterval;
     this._setVerticalSwitch('setting-count-mode-switch', 'setting-count-mode', settings.countMode);
     document.getElementById('setting-interval-sound').value = settings.intervalSound;
-    document.getElementById('setting-play-final-sound').checked = settings.playFinalSound;
+    const finalSoundVal = settings.playFinalSound ? 'on' : 'off';
+    this._setVerticalSwitch('setting-play-final-sound-switch', 'setting-play-final-sound', finalSoundVal);
     document.getElementById('setting-final-sound').value = settings.finalSound;
     document.getElementById('final-sound-group').style.display = settings.playFinalSound ? '' : 'none';
   }
@@ -405,7 +406,7 @@ export class UIManager {
       swapInterval: parseInt(document.getElementById('setting-swap-interval').value),
       countMode: document.getElementById('setting-count-mode').value,
       intervalSound: document.getElementById('setting-interval-sound').value,
-      playFinalSound: document.getElementById('setting-play-final-sound').checked,
+      playFinalSound: document.getElementById('setting-play-final-sound').value === 'on',
       finalSound: document.getElementById('setting-final-sound').value
     };
   }
@@ -434,10 +435,13 @@ export class UIManager {
         autoSave();
       });
     });
-    document.getElementById('setting-play-final-sound').addEventListener('change', () => {
-      const enabled = document.getElementById('setting-play-final-sound').checked;
-      document.getElementById('final-sound-group').style.display = enabled ? '' : 'none';
-      autoSave();
+    // Play final sound switch
+    document.querySelectorAll('#setting-play-final-sound-switch .hswitch-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this._setVerticalSwitch('setting-play-final-sound-switch', 'setting-play-final-sound', btn.dataset.value);
+        document.getElementById('final-sound-group').style.display = btn.dataset.value === 'on' ? '' : 'none';
+        autoSave();
+      });
     });
 
     // Reset settings
