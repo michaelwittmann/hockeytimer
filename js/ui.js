@@ -378,8 +378,19 @@ export class UIManager {
   populateSettings(settings) {
     document.getElementById('setting-game-duration').value = settings.gameDuration;
     document.getElementById('setting-swap-interval').value = settings.swapInterval;
-    document.getElementById('setting-count-mode').value = settings.countMode;
+    this._setVerticalSwitch('setting-count-mode-switch', 'setting-count-mode', settings.countMode);
     document.getElementById('setting-interval-sound').value = settings.intervalSound;
+    document.getElementById('setting-play-final-sound').checked = settings.playFinalSound;
+    document.getElementById('setting-final-sound').value = settings.finalSound;
+    document.getElementById('final-sound-group').style.display = settings.playFinalSound ? '' : 'none';
+  }
+
+  _setVerticalSwitch(switchId, hiddenId, value) {
+    const hidden = document.getElementById(hiddenId);
+    hidden.value = value;
+    document.querySelectorAll(`#${switchId} .hswitch-option`).forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.value === value);
+    });
   }
 
   getSettingsFromForm() {
@@ -387,7 +398,9 @@ export class UIManager {
       gameDuration: parseInt(document.getElementById('setting-game-duration').value),
       swapInterval: parseInt(document.getElementById('setting-swap-interval').value),
       countMode: document.getElementById('setting-count-mode').value,
-      intervalSound: document.getElementById('setting-interval-sound').value
+      intervalSound: document.getElementById('setting-interval-sound').value,
+      playFinalSound: document.getElementById('setting-play-final-sound').checked,
+      finalSound: document.getElementById('setting-final-sound').value
     };
   }
 
@@ -402,8 +415,21 @@ export class UIManager {
     // Listen to all setting inputs
     document.getElementById('setting-game-duration').addEventListener('change', autoSave);
     document.getElementById('setting-swap-interval').addEventListener('change', autoSave);
-    document.getElementById('setting-count-mode').addEventListener('change', autoSave);
     document.getElementById('setting-interval-sound').addEventListener('change', autoSave);
+    document.getElementById('setting-final-sound').addEventListener('change', autoSave);
+
+    // Vertical switch for count mode
+    document.querySelectorAll('#setting-count-mode-switch .hswitch-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this._setVerticalSwitch('setting-count-mode-switch', 'setting-count-mode', btn.dataset.value);
+        autoSave();
+      });
+    });
+    document.getElementById('setting-play-final-sound').addEventListener('change', () => {
+      const enabled = document.getElementById('setting-play-final-sound').checked;
+      document.getElementById('final-sound-group').style.display = enabled ? '' : 'none';
+      autoSave();
+    });
 
     // Reset settings
     document.getElementById('reset-settings').addEventListener('click', () => {
@@ -415,6 +441,14 @@ export class UIManager {
     // Test current selected sound
     document.getElementById('test-current-sound').addEventListener('click', () => {
       const soundKey = document.getElementById('setting-interval-sound').value;
+      if (callbacks.onTestSound) {
+        callbacks.onTestSound(soundKey);
+      }
+    });
+
+    // Test final sound
+    document.getElementById('test-final-sound').addEventListener('click', () => {
+      const soundKey = document.getElementById('setting-final-sound').value;
       if (callbacks.onTestSound) {
         callbacks.onTestSound(soundKey);
       }

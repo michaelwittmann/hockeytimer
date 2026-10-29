@@ -12,7 +12,6 @@ class HockeyTimerApp {
     this.ui = null;
 
     this.previousTime = 0;
-    this.hasPlayedFirstInterval = false;
   }
 
   async initialize() {
@@ -54,22 +53,28 @@ class HockeyTimerApp {
       const timeUntilSwap = this.timer.getTimeUntilNextSwap();
       this.ui.updateWarning(timeUntilSwap, WARNING_TIME);
 
-      // ONLY play audio when timer is actively running
-      if (this.timer.state === TIMER_STATES.RUNNING) {
+      // ONLY play audio when timer is actively running and not finished
+      if (this.timer.state === TIMER_STATES.RUNNING && !this.timer.isFinished()) {
         const swapInterval = this.timer.swapInterval;
+        const countMode = this.timer.countMode;
 
-        // Calculate which interval we were in and which we're in now
-        const previousInterval = Math.floor(this.previousTime / swapInterval);
-        const currentInterval = Math.floor(currentTime / swapInterval);
+        let crossed;
+        if (countMode === 'countDown') {
+          const prevFloor = Math.floor(this.previousTime);
+          const curFloor  = Math.floor(currentTime);
+          // curFloor > 0 excludes the game-end zero boundary (handled by onFinish)
+          crossed = prevFloor !== curFloor
+            && curFloor % swapInterval === 0
+            && curFloor > 0;
+        } else {
+          const previousInterval = Math.floor(Math.floor(this.previousTime) / swapInterval);
+          const currentInterval  = Math.floor(Math.floor(currentTime) / swapInterval);
+          // currentInterval > 0 excludes the starting position
+          crossed = currentInterval > previousInterval && currentInterval > 0;
+        }
 
-        // Check if we crossed a boundary (interval changed)
-        if (currentInterval !== previousInterval) {
-          // Skip the first interval change after start (don't play sound)
-          if (this.hasPlayedFirstInterval) {
-            this._playIntervalSound();
-          } else {
-            this.hasPlayedFirstInterval = true;
-          }
+        if (crossed) {
+          this._playIntervalSound();
         }
       }
 
@@ -79,13 +84,20 @@ class HockeyTimerApp {
 
     // Game finished
     this.timer.onFinish = () => {
-      // Play interval sound at game end
-      this._playIntervalSound();
+      if (this.settings.get('playFinalSound')) {
+        this._playFinalSound();
+      }
     };
 
     // State changed
     this.timer.onStateChange = (state) => {
       this.ui.updateState(state);
+
+      // Snap previousTime whenever we start running so any time adjustments
+      // made while stopped/paused don't look like interval crossings.
+      if (state === TIMER_STATES.RUNNING) {
+        this.previousTime = this.timer.currentTime;
+      }
 
       // Remove warnings when not running
       if (state !== TIMER_STATES.RUNNING) {
@@ -104,10 +116,6 @@ class HockeyTimerApp {
             this.ui.hideAudioWarning();
           }
         }
-
-        // Reset flags for new session
-        this.hasPlayedFirstInterval = false;
-        this.previousTime = this.timer.currentTime;
         this.timer.start();
       },
 
@@ -125,9 +133,7 @@ class HockeyTimerApp {
 
       onReset: () => {
         this.timer.reset();
-        // Reset flags for fresh start
         this.previousTime = this.timer.currentTime;
-        this.hasPlayedFirstInterval = false;
       },
 
       onAdjustTime: (seconds) => {
@@ -162,7 +168,6 @@ class HockeyTimerApp {
               // Timer configuration changed - update timer
               this.timer.updateConfig(this.settings.getAll());
               this.previousTime = this.timer.currentTime;
-              this.hasPlayedFirstInterval = false;
             }
           });
         }
@@ -175,7 +180,6 @@ class HockeyTimerApp {
         // Update timer with reset settings
         this.timer.updateConfig(this.settings.getAll());
         this.previousTime = this.timer.currentTime;
-        this.hasPlayedFirstInterval = false;
       },
 
       onTestSound: (soundKey) => {
@@ -203,6 +207,17 @@ class HockeyTimerApp {
     if (!this.audio.isReady()) {
       console.warn('Audio not ready - cannot play interval sound');
       this.ui.showAudioWarning('Audio not enabled - click Start to enable');
+      return;
+    }
+
+    this.audio.playSound(soundKey);
+  }
+
+  _playFinalSound() {
+    const soundKey = this.settings.get('finalSound');
+
+    if (!this.audio.isReady()) {
+      console.warn('Audio not ready - cannot play final sound');
       return;
     }
 

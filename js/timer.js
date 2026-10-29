@@ -93,6 +93,7 @@ export class GameTimer {
     this.startTimestamp = null;
     this.pausedTime = 0;
     this.lastTickTime = null;
+    this._wasFinished = false;
 
     if (this.onTick) {
       this.onTick(this.currentTime);
@@ -182,10 +183,6 @@ export class GameTimer {
     this.lastTickTime = now;
 
     const previousTime = this.currentTime;
-    // For interval detection, truncate to whole seconds (ignore tenths)
-    const previousSeconds = Math.floor(previousTime);
-    const previousInterval = Math.floor(previousSeconds / this.swapInterval);
-
     // Update current time
     if (this.countMode === 'countDown') {
       this.currentTime = Math.max(0, this.currentTime - elapsed);
@@ -194,20 +191,24 @@ export class GameTimer {
       this.currentTime = Math.min(this.gameDuration, this.currentTime + elapsed);
     }
 
-    // For interval detection, truncate to whole seconds (ignore tenths)
-    const currentSeconds = Math.floor(this.currentTime);
-    const currentInterval = Math.floor(currentSeconds / this.swapInterval);
-
-    // Check if we crossed an interval boundary
-    // Play sound when the seconds part reaches the interval boundary, ignoring tenths
-    // Example: 60.9 -> 60.8 triggers sound at 60 second mark (stadium clocks don't show tenths)
+    // Check if we crossed an interval boundary.
+    // Count-down: fire on the first tick where the displayed second hits a swap boundary,
+    // i.e. when floor(currentTime) % swapInterval == 0 and floor(previousTime) % swapInterval != 0.
+    // This means the sound plays at XX:00.9 (the first displayed frame of a new interval).
+    // Count-up: fire on the first tick past a boundary.
     let crossedInterval = false;
+    let currentInterval;
 
     if (this.countMode === 'countDown') {
-      // Count down: play when crossing DOWN through an interval boundary (at X:00.Y)
-      crossedInterval = previousInterval > currentInterval && currentInterval >= 0;
+      const prevFloor = Math.floor(previousTime);
+      const curFloor  = Math.floor(this.currentTime);
+      currentInterval = Math.floor(curFloor / this.swapInterval);
+      crossedInterval = prevFloor !== curFloor
+        && curFloor % this.swapInterval === 0
+        && currentInterval >= 0;
     } else {
-      // Count up: play when crossing UP through an interval boundary (at X:00.Y)
+      const previousInterval = Math.floor(Math.floor(previousTime) / this.swapInterval);
+      currentInterval = Math.floor(Math.floor(this.currentTime) / this.swapInterval);
       crossedInterval = currentInterval > previousInterval;
     }
 
@@ -215,6 +216,11 @@ export class GameTimer {
       if (this.onSwap) {
         this.onSwap(currentInterval);
       }
+    }
+
+    // Update display before checking finish so the final value is always shown
+    if (this.onTick) {
+      this.onTick(this.currentTime);
     }
 
     // Check if game is finished
@@ -239,11 +245,6 @@ export class GameTimer {
       return;
     }
 
-    // Call tick callback
-    if (this.onTick) {
-      this.onTick(this.currentTime);
-    }
-
     // Schedule next frame
     this.animationFrameId = requestAnimationFrame(() => this._tick());
   }
@@ -262,6 +263,7 @@ export class GameTimer {
     // Reset to new duration
     this.currentTime = this.countMode === 'countDown' ? this.gameDuration : 0;
     this.pausedTime = this.currentTime;
+    this._wasFinished = false;
 
     if (this.onTick) {
       this.onTick(this.currentTime);

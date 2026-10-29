@@ -201,6 +201,12 @@ body {
   font-weight: 600;
 }
 
+.modal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
 .close-btn {
   width: 44px;
   height: 44px;
@@ -232,6 +238,17 @@ body {
 }
 
 /* Setting Groups */
+.setting-row {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.setting-row .setting-group {
+  flex: 1;
+  margin-bottom: 0;
+}
+
 .setting-group {
   margin-bottom: var(--spacing-md);
 }
@@ -276,19 +293,30 @@ body {
 /* Sound Selector */
 .sound-selector {
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
+  flex-direction: row;
+  gap: var(--spacing-xs);
+  align-items: center;
+}
+
+.sound-selector select {
+  flex: 1;
 }
 
 .test-sound-btn {
-  padding: var(--spacing-sm);
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  padding: 0;
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
-  font-size: 0.875rem;
+  font-size: 1.1rem;
   cursor: pointer;
   transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .test-sound-btn:hover {
@@ -297,7 +325,7 @@ body {
 }
 
 .test-sound-btn:active {
-  transform: scale(0.98);
+  transform: scale(0.95);
 }
 
 /* Volume Control */
@@ -350,6 +378,49 @@ body {
   text-align: right;
   font-weight: 600;
   color: var(--accent-primary);
+}
+
+/* Horizontal Switch (segmented control) */
+.horizontal-switch {
+  display: flex;
+  flex-direction: row;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.hswitch-option {
+  flex: 1;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-secondary);
+  border: none;
+  border-right: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+  min-height: 44px;
+}
+
+.hswitch-option:last-child {
+  border-right: none;
+}
+
+.hswitch-option:hover:not(.active) {
+  background: var(--border);
+  color: var(--text-primary);
+}
+
+.hswitch-option.active {
+  background: var(--accent-primary);
+  color: #fff;
+  font-weight: 700;
+}
+
+.hswitch-option:active {
+  opacity: 0.85;
 }
 
 /* Buttons */

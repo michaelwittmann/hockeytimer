@@ -62,29 +62,33 @@
     <div class="modal-content">
       <div class="modal-header">
         <h2>Settings</h2>
-        <button id="settings-close" class="close-btn" aria-label="Close">&times;</button>
+        <div class="modal-header-actions">
+          <button id="reset-settings" class="icon-btn" aria-label="Reset to defaults" title="Reset to defaults" style="font-size: 1.3rem;">↺</button>
+          <button id="settings-close" class="icon-btn" aria-label="Close">&#x2715;</button>
+        </div>
       </div>
 
       <div class="modal-body">
-        <!-- Game Duration -->
-        <div class="setting-group">
-          <label for="setting-game-duration">Game Duration (minutes)</label>
-          <input type="number" inputmode="numeric" pattern="[0-9]*" id="setting-game-duration" min="1" max="99" value="32">
-        </div>
-
-        <!-- Swap Interval -->
-        <div class="setting-group">
-          <label for="setting-swap-interval">Player Swap Interval (seconds)</label>
-          <input type="number" inputmode="numeric" pattern="[0-9]*" id="setting-swap-interval" min="1" max="3600" value="60">
-        </div>
-
         <!-- Count Mode -->
         <div class="setting-group">
-          <label for="setting-count-mode">Timer Mode</label>
-          <select id="setting-count-mode">
-            <option value="countDown">Count Down</option>
-            <option value="countUp">Count Up</option>
-          </select>
+          <label>Timer Mode</label>
+          <div class="horizontal-switch" id="setting-count-mode-switch">
+            <button type="button" class="hswitch-option" data-value="countDown">Count Down</button>
+            <button type="button" class="hswitch-option" data-value="countUp">Count Up</button>
+          </div>
+          <input type="hidden" id="setting-count-mode" value="countDown">
+        </div>
+
+        <!-- Game Duration + Swap Interval -->
+        <div class="setting-row">
+          <div class="setting-group">
+            <label for="setting-game-duration">Duration (min)</label>
+            <input type="number" inputmode="numeric" pattern="[0-9]*" id="setting-game-duration" min="1" max="99" value="32">
+          </div>
+          <div class="setting-group">
+            <label for="setting-swap-interval">Swap Interval (sec)</label>
+            <input type="number" inputmode="numeric" pattern="[0-9]*" id="setting-swap-interval" min="1" max="3600" value="60">
+          </div>
         </div>
 
         <!-- Interval Sound -->
@@ -99,18 +103,36 @@
               <option value="triple_bell">Triple Bell</option>
               <option value="ship_horn">Ship Horn</option>
             </select>
-            <button class="test-sound-btn" id="test-current-sound" type="button">▶ Test Sound</button>
+            <button class="test-sound-btn" id="test-current-sound" type="button" aria-label="Test sound">▶</button>
           </div>
         </div>
-      </div>
 
-      <div class="modal-footer">
-        <button id="reset-settings" class="btn secondary">Reset to Defaults</button>
+        <!-- Final Sound -->
+        <div class="setting-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="setting-play-final-sound">
+            Play sound when game ends
+          </label>
+        </div>
+        <div class="setting-group" id="final-sound-group">
+          <label for="setting-final-sound">Final Sound</label>
+          <div class="sound-selector">
+            <select id="setting-final-sound">
+              <option value="buzzer">Buzzer</option>
+              <option value="air_horn">Air Horn</option>
+              <option value="braam">Braam</option>
+              <option value="double_bell">Double Bell</option>
+              <option value="triple_bell">Triple Bell</option>
+              <option value="ship_horn">Ship Horn</option>
+            </select>
+            <button class="test-sound-btn" id="test-final-sound" type="button" aria-label="Test sound">▶</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <script type="module" src="js/app.js?v=4"></script>
+  <script type="module" src="js/app.js?v=5"></script>
   <script>
     // Register service worker for PWA
     if ('serviceWorker' in navigator) {
