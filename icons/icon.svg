@@ -2,65 +2,50 @@
   <!-- Background -->
   <rect width="512" height="512" rx="96" fill="#0a0e1a"/>
 
-  <!-- 7-segment display panel — centered, upper half -->
-  <rect x="20" y="44" width="472" height="170" rx="12" fill="#0d1a0d" stroke="#1a3a1a" stroke-width="3"/>
+  <!-- Hockey stick emoji — upper area, centered -->
+  <text x="256" y="260" font-size="200" font-family="Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif" text-anchor="middle">🏒</text>
 
-  <!-- digit width=52, gap=8, colon=18 -->
-  <!-- total = 4*52 + 2*18 + 3*8 = 208+36+24 = 268, centered in 472: offset=(472-268)/2=102, start x=20+102=122 -->
+  <!-- 7-segment clock: 32:00 — centered, lower area -->
+  <!-- 4 digits + 1 colon: each digit 72px wide, colon 24px, gap 10px -->
+  <!-- total = 4*72 + 24 + 3*10 = 288+24+30 = 342, centered: x_start = (512-342)/2 = 85 -->
 
-  <!-- "3" — x:122 -->
-  <rect x="130" y="62"  width="52" height="11" rx="5" fill="#ff2200"/>
-  <rect x="122" y="69"  width="11" height="40" rx="5" fill="#0d0600"/>
-  <rect x="174" y="69"  width="11" height="40" rx="5" fill="#ff2200"/>
-  <rect x="130" y="107" width="52" height="11" rx="5" fill="#ff2200"/>
-  <rect x="122" y="116" width="11" height="40" rx="5" fill="#0d0600"/>
-  <rect x="174" y="116" width="11" height="40" rx="5" fill="#ff2200"/>
-  <rect x="130" y="154" width="52" height="11" rx="5" fill="#ff2200"/>
+  <!-- "3" — x:85 -->
+  <rect x="93"  y="310" width="60" height="12" rx="6" fill="#ff2200"/>
+  <rect x="85"  y="318" width="12" height="44" rx="6" fill="#0d0600"/>
+  <rect x="145" y="318" width="12" height="44" rx="6" fill="#ff2200"/>
+  <rect x="93"  y="360" width="60" height="12" rx="6" fill="#ff2200"/>
+  <rect x="85"  y="370" width="12" height="44" rx="6" fill="#0d0600"/>
+  <rect x="145" y="370" width="12" height="44" rx="6" fill="#ff2200"/>
+  <rect x="93"  y="412" width="60" height="12" rx="6" fill="#ff2200"/>
 
-  <!-- "2" — x:190 -->
-  <rect x="198" y="62"  width="52" height="11" rx="5" fill="#ff2200"/>
-  <rect x="190" y="69"  width="11" height="40" rx="5" fill="#0d0600"/>
-  <rect x="242" y="69"  width="11" height="40" rx="5" fill="#ff2200"/>
-  <rect x="198" y="107" width="52" height="11" rx="5" fill="#ff2200"/>
-  <rect x="190" y="116" width="11" height="40" rx="5" fill="#ff2200"/>
-  <rect x="242" y="116" width="11" height="40" rx="5" fill="#0d0600"/>
-  <rect x="198" y="154" width="52" height="11" rx="5" fill="#ff2200"/>
+  <!-- "2" — x:167 -->
+  <rect x="175" y="310" width="60" height="12" rx="6" fill="#ff2200"/>
+  <rect x="167" y="318" width="12" height="44" rx="6" fill="#0d0600"/>
+  <rect x="227" y="318" width="12" height="44" rx="6" fill="#ff2200"/>
+  <rect x="175" y="360" width="60" height="12" rx="6" fill="#ff2200"/>
+  <rect x="167" y="370" width="12" height="44" rx="6" fill="#ff2200"/>
+  <rect x="227" y="370" width="12" height="44" rx="6" fill="#0d0600"/>
+  <rect x="175" y="412" width="60" height="12" rx="6" fill="#ff2200"/>
 
-  <!-- Colon 1 — x:262 -->
-  <circle cx="271" cy="102" r="7" fill="#ff2200"/>
-  <circle cx="271" cy="130" r="7" fill="#ff2200"/>
+  <!-- Colon — x:249 -->
+  <circle cx="261" cy="348" r="8" fill="#ff2200"/>
+  <circle cx="261" cy="382" r="8" fill="#ff2200"/>
 
-  <!-- "0" — x:280 -->
-  <rect x="288" y="62"  width="52" height="11" rx="5" fill="#ff2200"/>
-  <rect x="280" y="69"  width="11" height="40" rx="5" fill="#ff2200"/>
-  <rect x="332" y="69"  width="11" height="40" rx="5" fill="#ff2200"/>
-  <rect x="288" y="107" width="52" height="11" rx="5" fill="#0d0600"/>
-  <rect x="280" y="116" width="11" height="40" rx="5" fill="#ff2200"/>
-  <rect x="332" y="116" width="11" height="40" rx="5" fill="#ff2200"/>
-  <rect x="288" y="154" width="52" height="11" rx="5" fill="#ff2200"/>
+  <!-- "0" — x:273 -->
+  <rect x="281" y="310" width="60" height="12" rx="6" fill="#ff2200"/>
+  <rect x="273" y="318" width="12" height="44" rx="6" fill="#ff2200"/>
+  <rect x="333" y="318" width="12" height="44" rx="6" fill="#ff2200"/>
+  <rect x="281" y="360" width="60" height="12" rx="6" fill="#0d0600"/>
+  <rect x="273" y="370" width="12" height="44" rx="6" fill="#ff2200"/>
+  <rect x="333" y="370" width="12" height="44" rx="6" fill="#ff2200"/>
+  <rect x="281" y="412" width="60" height="12" rx="6" fill="#ff2200"/>
 
-  <!-- "0" — x:350 -->
-  <rect x="358" y="62"  width="52" height="11" rx="5" fill="#ff2200"/>
-  <rect x="350" y="69"  width="11" height="40" rx="5" fill="#ff2200"/>
-  <rect x="402" y="69"  width="11" height="40" rx="5" fill="#ff2200"/>
-  <rect x="358" y="107" width="52" height="11" rx="5" fill="#0d0600"/>
-  <rect x="350" y="116" width="11" height="40" rx="5" fill="#ff2200"/>
-  <rect x="402" y="116" width="11" height="40" rx="5" fill="#ff2200"/>
-  <rect x="358" y="154" width="52" height="11" rx="5" fill="#ff2200"/>
-
-  <!-- Colon 2 — x:412 -->
-  <circle cx="421" cy="102" r="7" fill="#ff2200"/>
-  <circle cx="421" cy="130" r="7" fill="#ff2200"/>
-
-  <!-- "0" (tenths) — smaller, x:430 -->
-  <rect x="434" y="72"  width="36" height="9"  rx="4" fill="#ff2200"/>
-  <rect x="428" y="78"  width="9"  height="30" rx="4" fill="#ff2200"/>
-  <rect x="470" y="78"  width="9"  height="30" rx="4" fill="#ff2200"/>
-  <rect x="434" y="106" width="36" height="9"  rx="4" fill="#0d0600"/>
-  <rect x="428" y="113" width="9"  height="30" rx="4" fill="#ff2200"/>
-  <rect x="470" y="113" width="9"  height="30" rx="4" fill="#ff2200"/>
-  <rect x="434" y="141" width="36" height="9"  rx="4" fill="#ff2200"/>
-
-  <!-- Hockey stick emoji — lower half, centered -->
-  <text x="60" y="490" font-size="240" font-family="Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif">🏒</text>
+  <!-- "0" — x:355 -->
+  <rect x="363" y="310" width="60" height="12" rx="6" fill="#ff2200"/>
+  <rect x="355" y="318" width="12" height="44" rx="6" fill="#ff2200"/>
+  <rect x="415" y="318" width="12" height="44" rx="6" fill="#ff2200"/>
+  <rect x="363" y="360" width="60" height="12" rx="6" fill="#0d0600"/>
+  <rect x="355" y="370" width="12" height="44" rx="6" fill="#ff2200"/>
+  <rect x="415" y="370" width="12" height="44" rx="6" fill="#ff2200"/>
+  <rect x="363" y="412" width="60" height="12" rx="6" fill="#ff2200"/>
 </svg>
