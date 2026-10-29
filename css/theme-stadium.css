@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'LCDDisplayMono';
-  src: url('../fonts/lcd-display-mono.otf') format('opentype');
+  src: url('../fonts/lcd-display-mono/lcd-display-mono.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }

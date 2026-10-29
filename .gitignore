@@ -38,3 +38,6 @@ yarn-error.log*
 # Local development
 .env.local
 .env.*.local
+
+# Font source download folder (font lives in fonts/lcd-display-mono/)
+lcd-display-mono.otf/
