@@ -2,17 +2,44 @@
   <!-- Background -->
   <rect width="512" height="512" rx="96" fill="#0a0e1a"/>
 
-  <!-- Stick shaft (top-left to lower-right) -->
-  <line x1="100" y1="100" x2="320" y2="370" stroke="#c8d8ff" stroke-width="28" stroke-linecap="round"/>
+  <!-- Hockey stick emoji — large, left-center -->
+  <text x="30" y="360" font-size="260" font-family="Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif">🏒</text>
 
-  <!-- Blade (flat, at bottom of shaft, pointing right) -->
-  <rect x="305" y="358" width="120" height="30" rx="12" fill="#c8d8ff" transform="rotate(-10, 305, 358)"/>
+  <!-- 7-segment display panel — top right -->
+  <rect x="248" y="36" width="236" height="106" rx="10" fill="#0d1a0d" stroke="#1a3a1a" stroke-width="3"/>
 
-  <!-- Puck (separate, being hit) -->
-  <!-- Bottom ellipse (shadow/side) -->
-  <ellipse cx="360" cy="418" rx="52" ry="14" fill="#0d1a33"/>
-  <!-- Top face -->
-  <ellipse cx="360" cy="410" rx="52" ry="14" fill="#1e2a4a" stroke="#4a9eff" stroke-width="4"/>
-  <!-- Shine -->
-  <ellipse cx="352" cy="407" rx="20" ry="5" fill="#2a3a5a" opacity="0.8"/>
+  <!-- === Digit "0" === x-origin: 260 -->
+  <rect x="272" y="52"  width="38" height="9" rx="4" fill="#ff2200"/>
+  <rect x="264" y="57"  width="9"  height="34" rx="4" fill="#ff2200"/>
+  <rect x="312" y="57"  width="9"  height="34" rx="4" fill="#ff2200"/>
+  <rect x="272" y="89"  width="38" height="9" rx="4" fill="#0d0600"/>
+  <rect x="264" y="96"  width="9"  height="34" rx="4" fill="#ff2200"/>
+  <rect x="312" y="96"  width="9"  height="34" rx="4" fill="#ff2200"/>
+  <rect x="272" y="128" width="38" height="9" rx="4" fill="#ff2200"/>
+
+  <!-- Colon -->
+  <circle cx="338" cy="84"  r="5" fill="#ff2200"/>
+  <circle cx="338" cy="110" r="5" fill="#ff2200"/>
+
+  <!-- === Digit "2" === x-origin: 350 -->
+  <rect x="352" y="52"  width="38" height="9" rx="4" fill="#ff2200"/>
+  <rect x="344" y="57"  width="9"  height="34" rx="4" fill="#0d0600"/>
+  <rect x="392" y="57"  width="9"  height="34" rx="4" fill="#ff2200"/>
+  <rect x="352" y="89"  width="38" height="9" rx="4" fill="#ff2200"/>
+  <rect x="344" y="96"  width="9"  height="34" rx="4" fill="#ff2200"/>
+  <rect x="392" y="96"  width="9"  height="34" rx="4" fill="#0d0600"/>
+  <rect x="352" y="128" width="38" height="9" rx="4" fill="#ff2200"/>
+
+  <!-- Colon 2 -->
+  <circle cx="418" cy="84"  r="5" fill="#ff2200"/>
+  <circle cx="418" cy="110" r="5" fill="#ff2200"/>
+
+  <!-- === Digit "0" === x-origin: 430 -->
+  <rect x="432" y="52"  width="38" height="9" rx="4" fill="#ff2200"/>
+  <rect x="424" y="57"  width="9"  height="34" rx="4" fill="#ff2200"/>
+  <rect x="472" y="57"  width="9"  height="34" rx="4" fill="#ff2200"/>
+  <rect x="432" y="89"  width="38" height="9" rx="4" fill="#0d0600"/>
+  <rect x="424" y="96"  width="9"  height="34" rx="4" fill="#ff2200"/>
+  <rect x="472" y="96"  width="9"  height="34" rx="4" fill="#ff2200"/>
+  <rect x="432" y="128" width="38" height="9" rx="4" fill="#ff2200"/>
 </svg>
