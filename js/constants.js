@@ -5,7 +5,8 @@ export const DEFAULT_SETTINGS = {
   countMode: 'countDown',   // 'countDown' or 'countUp'
   intervalSound: 'ship_horn',  // 'buzzer', 'air_horn', 'braam', 'double_bell', 'triple_bell', 'ship_horn'
   playFinalSound: true,        // whether to play a sound when the game ends
-  finalSound: 'braam'          // sound to play at game end
+  finalSound: 'braam',         // sound to play at game end
+  theme: 'modern'              // 'modern' or 'stadium'
 };
 
 // Visual warning time (fixed at 10 seconds)

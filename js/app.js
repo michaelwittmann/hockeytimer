@@ -42,6 +42,7 @@ class HockeyTimerApp {
     // Update UI to initial state
     this.ui.updateTimerDisplay(this.timer.currentTime);
     this.ui.updateState(this.timer.state);
+    this.ui.applyTheme(savedSettings.theme || 'modern');
   }
 
   _setupTimerCallbacks() {
@@ -164,6 +165,9 @@ class HockeyTimerApp {
         if (changes.length > 0) {
           // Apply settings that need immediate effect
           changes.forEach(({ key, newValue }) => {
+            if (key === 'theme') {
+              this.ui.applyTheme(newValue);
+            }
             if (['gameDuration', 'swapInterval', 'countMode'].includes(key)) {
               // Timer configuration changed - update timer
               this.timer.updateConfig(this.settings.getAll());
@@ -176,6 +180,7 @@ class HockeyTimerApp {
       onResetSettings: () => {
         this.settings.reset();
         this.ui.populateSettings(this.settings.getAll());
+        this.ui.applyTheme(this.settings.get('theme'));
 
         // Update timer with reset settings
         this.timer.updateConfig(this.settings.getAll());

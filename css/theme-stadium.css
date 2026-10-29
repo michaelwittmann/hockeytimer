@@ -1,0 +1,133 @@
+@font-face {
+  font-family: 'LCDDisplayMono';
+  src: url('../fonts/lcd-display-mono.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body.theme-stadium {
+  --accent-primary:  #ff2200;
+  --accent-hover:    #cc1a00;
+  --accent-active:   #991400;
+  --success:         #ff2200;
+  --warning:         #cc1a00;
+  --danger:          #ff2200;
+  --bg-primary:      #0d0d0d;
+  --bg-secondary:    #161616;
+  --bg-modal:        #1a1a1a;
+  --border:          #2a2a2a;
+  --text-secondary:  #888888;
+}
+
+body.theme-stadium .timer-container {
+  background: #0a0a0a;
+  border-color: #1e1e1e;
+  border-width: 6px;
+  border-radius: 8px;
+  box-shadow:
+    inset 0 2px 12px rgba(0, 0, 0, 0.9),
+    0 4px 24px rgba(0, 0, 0, 0.9);
+}
+
+body.theme-stadium .timer-display {
+  font-family: 'LCDDisplayMono', monospace;
+  color: #ff2200;
+  text-shadow: none;
+  letter-spacing: 0.05em;
+}
+
+body.theme-stadium .timer-display:hover {
+  color: #ff2200;
+  filter: brightness(1.1);
+}
+
+/* State overrides — keep border flat, no glow */
+body.theme-stadium .timer-container.state-stopped,
+body.theme-stadium .timer-container.state-running,
+body.theme-stadium .timer-container.state-paused,
+body.theme-stadium .timer-container.state-finished {
+  border-color: #1e1e1e;
+  box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.9);
+  animation: none;
+}
+
+body.theme-stadium .timer-container.warning,
+body.theme-stadium .timer-container.warning.urgent {
+  border-color: #1e1e1e;
+  box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.9);
+  animation: none;
+}
+
+body.theme-stadium .controls-container {
+  overflow: visible;
+  align-items: stretch;
+}
+
+/* Fix: overflow:hidden on control-btn clips the keyboard-switch shadow */
+body.theme-stadium .control-btn {
+  overflow: visible;
+  flex: 1 1 0;
+}
+
+/* Disable ripple in stadium theme — keyboard-switch effect replaces it */
+body.theme-stadium .control-btn::before {
+  display: none;
+}
+
+body.theme-stadium .control-btn.primary,
+body.theme-stadium .control-btn.secondary,
+body.theme-stadium .control-btn:not(.primary):not(.secondary) {
+  box-shadow:
+    0 6px 0 0 var(--accent-active),
+    inset 0 1px 0 rgba(255,255,255,0.12);
+  transform: translateY(0);
+  transition: transform 40ms ease, box-shadow 40ms ease, filter 40ms ease;
+  border-bottom: none;
+  margin-bottom: 6px;
+}
+
+body.theme-stadium .control-btn.primary:hover:not(:disabled),
+body.theme-stadium .control-btn.secondary:hover:not(:disabled),
+body.theme-stadium .control-btn:not(.primary):not(.secondary):hover:not(:disabled) {
+  background: var(--accent-hover);
+  transform: translateY(0);
+  box-shadow:
+    0 6px 0 0 var(--accent-active),
+    inset 0 1px 0 rgba(255,255,255,0.12);
+}
+
+body.theme-stadium .control-btn.primary:active:not(:disabled),
+body.theme-stadium .control-btn.secondary:active:not(:disabled),
+body.theme-stadium .control-btn:not(.primary):not(.secondary):active:not(:disabled) {
+  transform: translateY(6px);
+  box-shadow:
+    0 0 0 0 var(--accent-active),
+    inset 0 1px 0 rgba(0,0,0,0.2);
+  filter: brightness(0.85);
+}
+
+body.theme-stadium .control-btn,
+body.theme-stadium .btn,
+body.theme-stadium .icon-btn,
+body.theme-stadium .hswitch-option,
+body.theme-stadium .test-sound-btn,
+body.theme-stadium .setting-group input[type="number"],
+body.theme-stadium .setting-group select,
+body.theme-stadium .modal-content,
+body.theme-stadium .horizontal-switch {
+  border-radius: 0;
+}
+
+/* Edit mode inputs */
+body.theme-stadium .time-edit-input,
+body.theme-stadium .time-edit-select {
+  font-family: 'LCDDisplayMono', monospace;
+  background: #0a0a0a;
+  border-color: #ff2200;
+  color: #ff2200;
+}
+
+body.theme-stadium .time-edit-input:focus {
+  box-shadow: 0 0 0 3px rgba(255, 34, 0, 0.25);
+  border-color: #ff2200;
+}

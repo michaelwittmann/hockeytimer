@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="css/timer.css">
   <link rel="stylesheet" href="css/controls.css">
   <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/theme-stadium.css">
 </head>
 <body>
   <div class="app-container">
@@ -128,11 +129,21 @@
             <button class="test-sound-btn" id="test-final-sound" type="button" aria-label="Test sound">▶</button>
           </div>
         </div>
+
+        <!-- Theme -->
+        <div class="setting-group">
+          <label for="setting-theme">Theme</label>
+          <select id="setting-theme">
+            <option value="modern">Modern</option>
+            <option value="stadium">Stadium</option>
+          </select>
+        </div>
+
       </div>
     </div>
   </div>
 
-  <script type="module" src="js/app.js?v=5"></script>
+  <script type="module" src="js/app.js?v=6"></script>
   <script>
     // Register service worker for PWA
     if ('serviceWorker' in navigator) {

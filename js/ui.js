@@ -376,6 +376,7 @@ export class UIManager {
   }
 
   populateSettings(settings) {
+    document.getElementById('setting-theme').value = settings.theme || 'modern';
     document.getElementById('setting-game-duration').value = settings.gameDuration;
     document.getElementById('setting-swap-interval').value = settings.swapInterval;
     this._setVerticalSwitch('setting-count-mode-switch', 'setting-count-mode', settings.countMode);
@@ -383,6 +384,10 @@ export class UIManager {
     document.getElementById('setting-play-final-sound').checked = settings.playFinalSound;
     document.getElementById('setting-final-sound').value = settings.finalSound;
     document.getElementById('final-sound-group').style.display = settings.playFinalSound ? '' : 'none';
+  }
+
+  applyTheme(theme) {
+    document.body.classList.toggle('theme-stadium', theme === 'stadium');
   }
 
   _setVerticalSwitch(switchId, hiddenId, value) {
@@ -395,6 +400,7 @@ export class UIManager {
 
   getSettingsFromForm() {
     return {
+      theme: document.getElementById('setting-theme').value,
       gameDuration: parseInt(document.getElementById('setting-game-duration').value),
       swapInterval: parseInt(document.getElementById('setting-swap-interval').value),
       countMode: document.getElementById('setting-count-mode').value,
@@ -418,7 +424,10 @@ export class UIManager {
     document.getElementById('setting-interval-sound').addEventListener('change', autoSave);
     document.getElementById('setting-final-sound').addEventListener('change', autoSave);
 
-    // Vertical switch for count mode
+    // Theme dropdown
+    document.getElementById('setting-theme').addEventListener('change', autoSave);
+
+    // Count mode switch
     document.querySelectorAll('#setting-count-mode-switch .hswitch-option').forEach(btn => {
       btn.addEventListener('click', () => {
         this._setVerticalSwitch('setting-count-mode-switch', 'setting-count-mode', btn.dataset.value);
