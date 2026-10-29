@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hockey-timer-v3';
+const CACHE_NAME = 'hockey-timer-v4';
 const urlsToCache = [
   './',
   './index.html',
@@ -6,18 +6,22 @@ const urlsToCache = [
   './css/timer.css',
   './css/controls.css',
   './css/responsive.css',
+  './css/theme-stadium.css',
   './js/app.js',
   './js/timer.js',
   './js/audio.js',
   './js/ui.js',
   './js/settings.js',
   './js/constants.js',
+  './fonts/lcd-display-mono/lcd-display-mono.otf',
   './sounds/buzzer.mp3',
   './sounds/air_horn.mp3',
   './sounds/braam.mp3',
   './sounds/double_bell.mp3',
   './sounds/triple_bell.mp3',
-  './sounds/ship_horn.ogg'
+  './sounds/ship_horn.ogg',
+  './icons/icon-192.png',
+  './icons/icon-512.png'
 ];
 
 // Install service worker and cache resources
