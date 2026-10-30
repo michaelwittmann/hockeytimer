@@ -65,13 +65,15 @@
   }
 
   .timer-display {
-    font-size: 8rem;
+    font-size: clamp(4rem, 8vw, 8rem);
   }
 
   /* Edit mode font size for large screens */
   .timer-display:has(.time-edit-input) .time-edit-input,
-  .timer-display:has(.time-edit-input) .time-separator {
-    font-size: 8rem;
+  .timer-display:has(.time-edit-input) .time-separator,
+  .timer-display:has(.time-edit-select) .time-edit-select,
+  .timer-display:has(.time-edit-select) .time-separator {
+    font-size: clamp(4rem, 8vw, 8rem);
   }
 
   .control-btn {

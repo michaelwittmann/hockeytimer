@@ -16,7 +16,7 @@
 }
 
 .timer-display {
-  font-size: 4rem;
+  font-size: clamp(2.5rem, 11vw, 4rem);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.05em;
@@ -26,16 +26,27 @@
   padding: 0;
   border-radius: var(--radius-sm);
   white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 /* Remove whitespace between inline-block elements in edit mode */
-.timer-display:has(.time-edit-input) {
+.timer-display:has(.time-edit-input),
+.timer-display:has(.time-edit-select) {
   font-size: 0;
+  white-space: normal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  width: 100%;
 }
 
 .timer-display:has(.time-edit-input) .time-edit-input,
-.timer-display:has(.time-edit-input) .time-separator {
-  font-size: 4rem;
+.timer-display:has(.time-edit-input) .time-separator,
+.timer-display:has(.time-edit-select) .time-edit-select,
+.timer-display:has(.time-edit-select) .time-separator {
+  font-size: clamp(2.5rem, 11vw, 4rem);
 }
 
 .timer-display:hover {

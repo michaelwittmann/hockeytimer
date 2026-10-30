@@ -69,11 +69,12 @@ export class UIManager {
     });
   }
 
-  updateTimerDisplay(seconds) {
-    const minutes = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    const tenths = Math.floor((seconds % 1) * 10);
-    const display = `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}:${tenths}`;
+  updateTimerDisplay(tenths) {
+    const t = Math.max(0, Math.floor(tenths));
+    const minutes = Math.floor(t / 600);
+    const secs    = Math.floor((t % 600) / 10);
+    const tenth   = t % 10;
+    const display = `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}:${tenth}`;
 
     if (!this.isEditMode) {
       this.timerDisplay.textContent = display;

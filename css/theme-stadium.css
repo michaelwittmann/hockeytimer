@@ -54,8 +54,39 @@ body.theme-stadium .timer-container.state-finished {
 body.theme-stadium .timer-container.warning,
 body.theme-stadium .timer-container.warning.urgent {
   border-color: #1e1e1e;
-  box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.9);
   animation: none;
+}
+
+body.theme-stadium .timer-container.warning .timer-display {
+  animation: none;
+}
+
+body.theme-stadium .timer-container.warning.urgent .timer-display {
+  animation: none;
+}
+
+body.theme-stadium .timer-container.warning {
+  animation: stadium-pulse-warning 1s ease-in-out infinite;
+}
+
+body.theme-stadium .timer-container.warning.urgent {
+  animation: stadium-flash-urgent 0.5s ease-in-out infinite;
+}
+
+@keyframes stadium-pulse-warning {
+  0%, 100% { border-color: #1e1e1e;
+              box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.9); }
+  50%       { border-color: #ff2200;
+              box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.9),
+                          0 0 24px rgba(255, 34, 0, 0.5); }
+}
+
+@keyframes stadium-flash-urgent {
+  0%, 100% { border-color: #1e1e1e;
+              box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.9); }
+  50%       { border-color: #ff2200;
+              box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.9),
+                          0 0 40px rgba(255, 34, 0, 0.8); }
 }
 
 body.theme-stadium .controls-container {

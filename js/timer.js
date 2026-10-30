@@ -1,276 +1,221 @@
 import { TIMER_STATES } from './constants.js';
 
+// Internal time unit: tenths of a second (integers only).
+// Count-down starts at gameDuration*600 + 9  (e.g. 32:00:9 = 19209)
+// Count-up   starts at 0                     (00:00:0)
+
+function toTenths(minutes, seconds = 0, tenths = 0) {
+  return minutes * 600 + seconds * 10 + tenths;
+}
+
+function startTenths(gameDurationMinutes, countMode) {
+  return countMode === 'countDown'
+    ? toTenths(gameDurationMinutes) + 9  // 32:00:9
+    : 0;                                  // 00:00:0
+}
+
 export class GameTimer {
   constructor(config) {
-    this.gameDuration = config.gameDuration * 60; // convert to seconds
-    this.swapInterval = config.swapInterval; // already in seconds
-    this.countMode = config.countMode;
+    this.gameDuration  = config.gameDuration;   // minutes
+    this.swapInterval  = config.swapInterval;   // seconds
+    this.countMode     = config.countMode;
 
-    // Timer state
-    this.state = TIMER_STATES.STOPPED;
-    this.currentTime = this.countMode === 'countDown' ? this.gameDuration : 0;
+    this.state       = TIMER_STATES.STOPPED;
+    this.currentTime = startTenths(this.gameDuration, this.countMode); // tenths
 
     // High-precision timing
     this.startTimestamp = null;
-    this.pausedTime = 0;
-    this.lastTickTime = null;
+    this.pausedTime     = this.currentTime;
+    this.lastTickTime   = null;
     this.animationFrameId = null;
+    this._wasFinished   = false;
 
     // Callbacks
-    this.onTick = null;
-    this.onSwap = null;
-    this.onFinish = null;
-    this.onStateChange = null;
+    this.onTick        = null; // (tenths) => void
+    this.onSwap        = null; // () => void
+    this.onFinish      = null; // () => void
+    this.onStateChange = null; // (state) => void
   }
+
+  // ── Public API ──────────────────────────────────────────────────────────────
 
   start() {
     if (this.state === TIMER_STATES.RUNNING) return;
+    if (this.state === TIMER_STATES.FINISHED) this._reset();
 
-    const wasFinished = this.state === TIMER_STATES.FINISHED;
-
-    if (wasFinished) {
-      this.reset();
-    }
-
-    this.state = TIMER_STATES.RUNNING;
+    this.state          = TIMER_STATES.RUNNING;
     this.startTimestamp = performance.now();
-    this.lastTickTime = this.startTimestamp;
+    this.lastTickTime   = this.startTimestamp;
 
-    if (this.onStateChange) {
-      this.onStateChange(this.state);
-    }
-
+    this.onStateChange?.(this.state);
     this._tick();
   }
 
   pause() {
     if (this.state !== TIMER_STATES.RUNNING) return;
 
-    this.state = TIMER_STATES.PAUSED;
+    this.state      = TIMER_STATES.PAUSED;
     this.pausedTime = this.currentTime;
 
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
       this.animationFrameId = null;
     }
-
-    if (this.onStateChange) {
-      this.onStateChange(this.state);
-    }
+    this.onStateChange?.(this.state);
   }
 
   resume() {
     if (this.state !== TIMER_STATES.PAUSED) return;
 
-    this.state = TIMER_STATES.RUNNING;
-    this.currentTime = this.pausedTime;
+    this.state          = TIMER_STATES.RUNNING;
+    this.currentTime    = this.pausedTime;
     this.startTimestamp = performance.now();
-    this.lastTickTime = this.startTimestamp;
+    this.lastTickTime   = this.startTimestamp;
 
-    if (this.onStateChange) {
-      this.onStateChange(this.state);
-    }
-
+    this.onStateChange?.(this.state);
     this._tick();
   }
 
   stop() {
     this.state = TIMER_STATES.STOPPED;
-
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
       this.animationFrameId = null;
     }
-
-    if (this.onStateChange) {
-      this.onStateChange(this.state);
-    }
+    this.onStateChange?.(this.state);
   }
 
   reset() {
     this.stop();
-    this.currentTime = this.countMode === 'countDown' ? this.gameDuration : 0;
-    this.startTimestamp = null;
-    this.pausedTime = 0;
-    this.lastTickTime = null;
-    this._wasFinished = false;
-
-    if (this.onTick) {
-      this.onTick(this.currentTime);
-    }
+    this._reset();
   }
 
+  // Adjust by whole seconds (positive or negative).
   adjustTime(seconds) {
-    const previousTime = this.currentTime;
-    const previousInterval = Math.floor(previousTime / this.swapInterval);
-
-    // Allow up to 99:59:9 (5999.9 seconds)
-    const maxTime = 99 * 60 + 59 + 0.9;
-    this.currentTime = Math.max(0, Math.min(maxTime, this.currentTime + seconds));
-
-    const currentInterval = Math.floor(this.currentTime / this.swapInterval);
-
-    // Check if adjustment crossed an interval boundary
-    const crossedInterval = previousInterval !== currentInterval;
+    const maxTenths = (this.countMode === 'countUp' && this.state === TIMER_STATES.RUNNING)
+      ? this._finishTenths()
+      : toTenths(99, 59, 9);
+    this.currentTime = Math.max(0, Math.min(maxTenths, this.currentTime + seconds * 10));
 
     if (this.state === TIMER_STATES.RUNNING) {
-      // Reset timing reference to avoid drift
       this.startTimestamp = performance.now();
-      this.lastTickTime = this.startTimestamp;
+      this.lastTickTime   = this.startTimestamp;
     } else if (this.state === TIMER_STATES.PAUSED) {
       this.pausedTime = this.currentTime;
     }
 
-    if (this.onTick) {
-      this.onTick(this.currentTime);
-    }
-
-    return { crossedInterval, currentInterval };
+    this.onTick?.(this.currentTime);
   }
 
   setTime(minutes, seconds, tenths = 0) {
-    const totalSeconds = minutes * 60 + seconds + (tenths / 10);
-    const adjustment = totalSeconds - this.currentTime;
-    const result = this.adjustTime(adjustment);
-
-    // Force immediate display update
-    if (this.onTick) {
-      this.onTick(this.currentTime);
-    }
-
-    return result;
+    const target = toTenths(minutes, seconds, tenths);
+    this.adjustTime((target - this.currentTime) / 10);
   }
 
-  getTimeRemaining() {
-    if (this.countMode === 'countDown') {
-      return this.currentTime;
-    } else {
-      return Math.max(0, this.gameDuration - this.currentTime);
-    }
-  }
-
+  // Returns seconds until next swap boundary (for warning highlight).
   getTimeUntilNextSwap() {
-    const timeInCycle = this.currentTime % this.swapInterval;
+    const wholeSeconds = Math.floor(this.currentTime / 10);
+    const swapSec      = this.swapInterval;
 
     if (this.countMode === 'countDown') {
-      // Count down: time until we hit the next lower interval boundary
-      // e.g., at 1:45 in cycle, we have 45 seconds until 1:00
-      return timeInCycle;
+      return wholeSeconds % swapSec;
     } else {
-      // Count up: time until we hit the next higher interval boundary
-      // e.g., at 0:15 in cycle, we have 45 seconds until 1:00
-      return this.swapInterval - timeInCycle;
+      const rem = wholeSeconds % swapSec;
+      return rem === 0 ? swapSec : swapSec - rem;
     }
   }
 
-  getCurrentInterval() {
-    return Math.floor(this.currentTime / this.swapInterval);
+  updateConfig(config) {
+    const wasRunning = this.state === TIMER_STATES.RUNNING;
+    if (wasRunning) this.pause();
+
+    this.gameDuration = config.gameDuration;
+    this.swapInterval = config.swapInterval;
+    this.countMode    = config.countMode;
+
+    this.currentTime  = startTenths(this.gameDuration, this.countMode);
+    this.pausedTime   = this.currentTime;
+    this._wasFinished = false;
+
+    this.onTick?.(this.currentTime);
+
+    if (wasRunning) this.resume();
   }
 
-  isFinished() {
-    if (this.countMode === 'countDown') {
-      return this.currentTime <= 0;
-    } else {
-      return this.currentTime >= this.gameDuration;
-    }
+  // ── Private ─────────────────────────────────────────────────────────────────
+
+  _finishTenths() {
+    // Count-down finishes at 00:00:0; count-up finishes at gameDuration:00:0
+    return this.countMode === 'countDown' ? 0 : toTenths(this.gameDuration);
+  }
+
+  _isFinished() {
+    return this.countMode === 'countDown'
+      ? this.currentTime <= 0
+      : this.currentTime >= toTenths(this.gameDuration);
+  }
+
+  _reset() {
+    this.currentTime  = startTenths(this.gameDuration, this.countMode);
+    this.pausedTime   = this.currentTime;
+    this.startTimestamp = null;
+    this.lastTickTime   = null;
+    this._wasFinished   = false;
+    this.onTick?.(this.currentTime);
   }
 
   _tick() {
     if (this.state !== TIMER_STATES.RUNNING) return;
 
-    const now = performance.now();
-    const elapsed = (now - this.lastTickTime) / 1000; // convert to seconds
+    const now     = performance.now();
+    const elapsed = now - this.lastTickTime; // milliseconds
     this.lastTickTime = now;
 
-    const previousTime = this.currentTime;
-    // Update current time
-    if (this.countMode === 'countDown') {
-      this.currentTime = Math.max(0, this.currentTime - elapsed);
-    } else {
-      // Count up - stop at game duration
-      this.currentTime = Math.min(this.gameDuration, this.currentTime + elapsed);
-    }
-
-    // Check if we crossed an interval boundary.
-    // Count-down: fire on the first tick where the displayed second hits a swap boundary,
-    // i.e. when floor(currentTime) % swapInterval == 0 and floor(previousTime) % swapInterval != 0.
-    // This means the sound plays at XX:00.9 (the first displayed frame of a new interval).
-    // Count-up: fire on the first tick past a boundary.
-    let crossedInterval = false;
-    let currentInterval;
+    const prevTenths = this.currentTime;
+    const deltaTenths = elapsed / 100; // ms → tenths
 
     if (this.countMode === 'countDown') {
-      const prevFloor = Math.floor(previousTime);
-      const curFloor  = Math.floor(this.currentTime);
-      currentInterval = Math.floor(curFloor / this.swapInterval);
-      crossedInterval = prevFloor !== curFloor
-        && curFloor % this.swapInterval === 0
-        && currentInterval >= 0;
+      this.currentTime = Math.max(0, this.currentTime - deltaTenths);
     } else {
-      const previousInterval = Math.floor(Math.floor(previousTime) / this.swapInterval);
-      currentInterval = Math.floor(Math.floor(this.currentTime) / this.swapInterval);
-      crossedInterval = currentInterval > previousInterval;
+      this.currentTime = Math.min(toTenths(this.gameDuration), this.currentTime + deltaTenths);
     }
 
-    if (crossedInterval && !this.isFinished()) {
-      if (this.onSwap) {
-        this.onSwap(currentInterval);
+    // Interval crossing: compare whole-second buckets.
+    // Count-down: fire when the displayed second just became a multiple of swapInterval
+    //   (and it's not zero, which is handled by onFinish).
+    // Count-up:   fire when we cross into a new swapInterval bucket (skip bucket 0).
+    const prevSec = Math.floor(prevTenths / 10);
+    const curSec  = Math.floor(this.currentTime / 10);
+
+    if (prevSec !== curSec && !this._isFinished()) {
+      if (this.countMode === 'countDown') {
+        if (curSec % this.swapInterval === 0 && curSec > 0) {
+          this.onSwap?.();
+        }
+      } else {
+        const prevBucket = Math.floor(prevSec / this.swapInterval);
+        const curBucket  = Math.floor(curSec  / this.swapInterval);
+        if (curBucket > prevBucket && curBucket > 0) {
+          this.onSwap?.();
+        }
       }
     }
 
-    // Update display before checking finish so the final value is always shown
-    if (this.onTick) {
-      this.onTick(this.currentTime);
-    }
+    this.onTick?.(this.currentTime);
 
-    // Check if game is finished
-    if (this.isFinished() && !this._wasFinished) {
+    if (this._isFinished() && !this._wasFinished) {
       this._wasFinished = true;
       this.state = TIMER_STATES.FINISHED;
+      this.onFinish?.();
+      this.onStateChange?.(this.state);
 
-      if (this.onFinish) {
-        this.onFinish();
-      }
-
-      if (this.onStateChange) {
-        this.onStateChange(this.state);
-      }
-
-      // Stop the animation loop
       if (this.animationFrameId) {
         cancelAnimationFrame(this.animationFrameId);
         this.animationFrameId = null;
       }
-
       return;
     }
 
-    // Schedule next frame
     this.animationFrameId = requestAnimationFrame(() => this._tick());
-  }
-
-  updateConfig(config) {
-    const wasRunning = this.state === TIMER_STATES.RUNNING;
-
-    if (wasRunning) {
-      this.pause();
-    }
-
-    this.gameDuration = config.gameDuration * 60;
-    this.swapInterval = config.swapInterval; // already in seconds
-    this.countMode = config.countMode;
-
-    // Reset to new duration
-    this.currentTime = this.countMode === 'countDown' ? this.gameDuration : 0;
-    this.pausedTime = this.currentTime;
-    this._wasFinished = false;
-
-    if (this.onTick) {
-      this.onTick(this.currentTime);
-    }
-
-    if (wasRunning) {
-      this.resume();
-    }
   }
 }
